@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# benchmarks.py
 """
 This script benchmarks various aspects of string_tensors functionality:
   1) Time to create random lists of strings, or a single random string.
@@ -20,7 +18,7 @@ import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
 # Import local patch
-from string_tensors import patch_functional, string_to_tensor_asview
+from torch_string_tensors import patch_functional
 patch_functional()
 
 os.makedirs("benchmarks_output", exist_ok=True)
@@ -47,19 +45,6 @@ def generate_random_string_list(num_strings, min_len=1, max_len=100, alphabet=No
 ###############################################################################
 # Benchmark routines
 ###############################################################################
-
-def benchmark_single_to_tensor_asview(s, device="cpu", runs=10):
-    """
-    Benchmark our alternate approach with torch.as_tensor(memoryview(...)).
-    """
-    total_time = 0.0
-    for _ in range(runs):
-        start = time.perf_counter()
-        t = string_to_tensor_asview(s, device=device)
-        end = time.perf_counter()
-        total_time += (end - start)
-    return total_time / runs
-
 
 def benchmark_creation_list(num_strings, min_len=1, max_len=100, runs=10):
     """
@@ -201,9 +186,7 @@ def run_benchmarks_and_plot():
         (500, "N=500"),
     ]
 
-    # CHANGE: START
     runs = 100
-    # CHANGE: END
 
     # We'll gather data in a dictionary
     results_data = {
@@ -215,8 +198,6 @@ def run_benchmarks_and_plot():
         "single_to_tensor": {},
         "single_from_tensor": {},
         "combined_single": {},
-        "single_to_tensor_asview": {},
-        "combined_single_asview": {},
     }
 
     # Because single string scenario doesn't need "N=10" or "N=100",
@@ -257,8 +238,6 @@ def run_benchmarks_and_plot():
         results_data["single_to_tensor"][device]     = []
         results_data["single_from_tensor"][device]   = []
         results_data["combined_single"][device]      = []
-        results_data["single_to_tensor_asview"][device] = []
-        results_data["combined_single_asview"][device] = []
 
         single_creation_time = benchmark_creation_single_string(min_len=5, max_len=15, runs=runs)
         results_data["single_creation"][device].append((single_scenario_label, single_creation_time))
@@ -270,12 +249,6 @@ def run_benchmarks_and_plot():
             t = t.to(device)
         stime = benchmark_single_from_tensor(t, device=device, runs=runs)
         combined_time = benchmark_combined_single(min_len=5, max_len=15, device=device, runs=runs)
-
-        s2t_asview_time = benchmark_single_to_tensor_asview(single_str, device=device, runs=runs)
-        combined_asview_time = benchmark_combined_single(min_len=5, max_len=15, device=device, runs=runs)
-        
-        results_data["single_to_tensor_asview"][device].append((single_scenario_label, s2t_asview_time))
-        results_data["combined_single_asview"][device].append((single_scenario_label, combined_asview_time))
 
         results_data["single_to_tensor"][device].append((single_scenario_label, s2t_time))
         results_data["single_from_tensor"][device].append((single_scenario_label, stime))
@@ -381,9 +354,6 @@ def run_benchmarks_and_plot():
     plot_and_save("single_from_tensor",   "tensor_to_string",       is_single=True)
     plot_and_save("combined_single",      "Combined Single: creation->string_to_tensor->tensor_to_string", is_single=True)
     
-    plot_and_save("single_to_tensor_asview", "string_to_tensor_asview", is_single=True)
-    plot_and_save("combined_single_asview", "Combined Single: creation->string_to_tensor_asview->tensor_to_string", is_single=True)
-
     print("Benchmarking complete. Results written to:")
     print(f"  {txt_output_path}")
     print("Plots saved in 'benchmarks_output' folder.")
