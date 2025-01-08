@@ -152,33 +152,6 @@ def tensor_to_string(
     return data_bytes.decode(encoding)
 
 
-def string_to_tensor_asview(
-    s: str,
-    encoding: str = "utf-8",
-    device: str = 'cuda' if torch.cuda.is_available() else 'cpu'
-) -> torch.Tensor:
-    """
-    Alternate implementation using torch.as_tensor(memoryview(...)).
-    """
-    b = s.encode(encoding)
-    if len(b) == 0:
-        return torch.empty((0,), dtype=torch.uint8, device=device)
-
-    # "memoryview" on the bytes object
-    mem_view = memoryview(b)
-
-    # We can request dtype=torch.uint8 here.
-    # as_tensor will (hopefully) avoid a copy if it can.
-    t = torch.as_tensor(mem_view, dtype=torch.uint8)
-
-    # If we are on CPU device by default, no copy is made (in principle).
-    # If we must move it to GPU, that will cause a copy.
-    if device != "cpu":
-        t = t.to(device, non_blocking=True)
-
-    return t
-
-
 def patch_functional() -> None:
     """
     Monkey-patch torch.nn.functional with:
