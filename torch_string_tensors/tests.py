@@ -4,7 +4,7 @@ import string
 import torch
 import torch.nn.functional as F
 
-from string_tensors import list_to_tensor, tensor_to_list, string_to_tensor, tensor_to_string, patch_functional
+from torch_string_tensors import patch_functional
 
 patch_functional()
 
