@@ -1,0 +1,79 @@
+Benchmark Results
+=================
+
+Category: list_creation
+  Device: cpu
+    N=10: 0.000128 s
+    N=100: 0.001282 s
+    N=500: 0.005499 s
+  Device: cuda
+    N=10: 0.000104 s
+    N=100: 0.001128 s
+    N=500: 0.005244 s
+
+Category: list_to_tensor
+  Device: cpu
+    N=10: 0.003949 s
+    N=100: 0.005697 s
+    N=500: 0.020909 s
+  Device: cuda
+    N=10: 0.001014 s
+    N=100: 0.004702 s
+    N=500: 0.020838 s
+
+Category: tensor_to_list
+  Device: cpu
+    N=10: 0.000177 s
+    N=100: 0.001759 s
+    N=500: 0.007611 s
+  Device: cuda
+    N=10: 0.001049 s
+    N=100: 0.008827 s
+    N=500: 0.049374 s
+
+Category: combined_list
+  Device: cpu
+    N=10: 0.003175 s
+    N=100: 0.016453 s
+    N=500: 0.075328 s
+  Device: cuda
+    N=10: 0.002860 s
+    N=100: 0.015550 s
+    N=500: 0.079463 s
+
+Category: single_creation
+  Device: cpu
+    SingleString: 0.000014 s
+  Device: cuda
+    SingleString: 0.000008 s
+
+Category: single_to_tensor
+  Device: cpu
+    SingleString: 0.000040 s
+  Device: cuda
+    SingleString: 0.000047 s
+
+Category: single_from_tensor
+  Device: cpu
+    SingleString: 0.000007 s
+  Device: cuda
+    SingleString: 0.000055 s
+
+Category: combined_single
+  Device: cpu
+    SingleString: 0.000149 s
+  Device: cuda
+    SingleString: 0.000140 s
+
+Category: single_to_tensor_asview
+  Device: cpu
+    SingleString: 0.000007 s
+  Device: cuda
+    SingleString: 0.000027 s
+
+Category: combined_single_asview
+  Device: cpu
+    SingleString: 0.000128 s
+  Device: cuda
+    SingleString: 0.000192 s
+
